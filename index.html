@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>导航网站</title>
+  <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/media.small.css">
+  <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_4658242_qt9tqbx026o.css">
+  <script defer src="./assets/js/alpine.min.js"></script>
+  <!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> -->
+</head>
+
+<body>
+  <div class="app" id="view-small">
+    <div x-data="search" class="search-container">
+      <div class="search-content">
+        <ul class="search-list">
+          <template x-for="item in list">
+            <li 
+              x-text="item.name" 
+              :class="currentSearchCateGory === item.key ? 'active' : '' " 
+              role="button"
+              @click="onSearchListItem(item)"
+            ></li>
+          </template>
+        </ul>
+        <div class="search-box">
+          <div class="select-box">
+            <template x-if="!currentSearchData.icon">
+              <div @click="showSelectBox" role="button" x-text="currentSearchData.name"></div>
+            </template>
+            <template x-if="currentSearchData.icon">
+              <span @click="showSelectBox" role="button" :class="`icon-custom-suf iconfont ${currentSearchData.icon}`"></span>
+            </template>
+            <template x-if="showSelect">
+              <ul class="select">
+                <template x-for="item in listItem">
+                  <li role="button" :value="item.key" x-text="item.name" @click="onSelectItem(item)"></option>
+                </template>
+              </ul>
+            </template>
+          </div>
+          <input type="text" x-model="content" @keyup.enter="onSearch"   />
+          <span class="icon-custom-search iconfont icon-search" role="button" @click="onSearch"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/js/search.js"></script>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('search', searchData)
+    })
+  </script>
+</body>
+
+</html>
