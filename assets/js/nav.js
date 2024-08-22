@@ -62,16 +62,15 @@ function navData () {
         let linkHtml = '<div class="link-group">'
         data.forEach((item) => {
           if (item.children) {
-            item.expand = item.expand || true
             html += `<dt style="margin-left: ${index * 20}px; margin-bottom: 10px;">${item.title} 层级：${index}</dt>`;
             html += `<dd style="margin-left: ${index * 20}px;">${generateDL(item.children, index + 1)}</dd>`;
           } else {
             linkHtml += `
               <dd style="margin-left: ${index * 20}px;">
-                <div class="other-link-item" role="button">
+                <a class="other-link-item" role="button" target="_blank" href="$${item.url}">
                   <img src="${self.getFaviconSync(item.url)}" alt="${item.title}" style="width: 20px; height: 20px; vertical-align: middle;">
                   <div class="other-link-item-title">${item.title}</div>
-                </div>
+                </a>
               </dd>
             `;
           }
