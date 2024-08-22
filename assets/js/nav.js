@@ -24,7 +24,7 @@ function navData () {
     },
 
     async getNavList () {
-      const res = await axios.get('http://101.43.223.31:6600/read?filepath=bookmarks.json')
+      const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
 
       if (res.status !== 200 || !res.data?.data) {
         this.commonList = []
