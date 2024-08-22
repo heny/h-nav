@@ -1,9 +1,11 @@
 function navData () {
+  let self = null;
   return {
     commonList: [],
     classList: [],
 
     init () {
+      self = this
       this.getNavList();
     },
 
@@ -23,6 +25,12 @@ function navData () {
       })
     },
 
+    getFaviconSync(url) {
+      const host = new URL(url).host
+      const faviconUrl = `https://api.iowen.cn/favicon/${host}.png`
+      return faviconUrl
+    },
+
     async getNavList () {
       const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
 
@@ -32,6 +40,8 @@ function navData () {
       }
 
       const data = res.data?.data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
+
+      // const data = constantData
 
       // 常用的书签
       let commonList = []
@@ -47,22 +57,36 @@ function navData () {
 
     get classListRender () {
       function generateDL(data, index) {
-        let html = '<dl>';
+        let html = '<dl class="other-book">';
+
+        let linkHtml = '<div class="link-group">'
         data.forEach((item) => {
           if (item.children) {
-            // 为 dt 添加间隙
-            html += `<dt style="margin-left: ${index * 20}px;">${item.title} 层级：${index}</dt>`;
+            item.expand = item.expand || true
+            html += `<dt style="margin-left: ${index * 20}px; margin-bottom: 10px;">${item.title} 层级：${index}</dt>`;
             html += `<dd style="margin-left: ${index * 20}px;">${generateDL(item.children, index + 1)}</dd>`;
           } else {
-            // 为 dd 添加间隙
-            html += `<dd style="margin-left: ${index * 20}px;"><a href="${item.url}">${item.title}</a></dd>`;
+            linkHtml += `
+              <dd style="margin-left: ${index * 20}px;">
+                <div class="other-link-item" role="button">
+                  <img src="${self.getFaviconSync(item.url)}" alt="${item.title}" style="width: 20px; height: 20px; vertical-align: middle;">
+                  <div class="other-link-item-title">${item.title}</div>
+                </div>
+              </dd>
+            `;
           }
         });
+        linkHtml += '</div>'
+        html += linkHtml;
+
         html += '</dl>';
         return html;
       }
+
+      const copyClassList = JSON.parse(JSON.stringify(this.classList))
     
-      const resultHTML = generateDL(this.classList, 0);
+      const resultHTML = generateDL(copyClassList, 0);
+      console.log('hhh - copyClassList', copyClassList)
       return resultHTML;
     }
   }
