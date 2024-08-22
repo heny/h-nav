@@ -67,7 +67,7 @@ function navData () {
           } else {
             linkHtml += `
               <dd style="margin-left: ${index * 20}px;">
-                <a class="other-link-item" role="button" target="_blank" href="$${item.url}">
+                <a class="other-link-item" role="button" target="_blank" href="${item.url}">
                   <img src="${self.getFaviconSync(item.url)}" alt="${item.title}" style="width: 20px; height: 20px; vertical-align: middle;">
                   <div class="other-link-item-title">${item.title}</div>
                 </a>
