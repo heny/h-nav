@@ -62,6 +62,9 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   overflow: hidden;
+  position: absolute;
+  top: calc(100% + 2px);
+  width: 100%;
 }
 .search-container .search-content .search-box .select-box .select li {
   padding: 8px 0;
@@ -70,4 +73,40 @@
 }
 .search-container .search-content .search-box .select-box .select li:not(:last-child) {
   border-bottom: 1px solid rgba(119, 119, 119, 0.3);
+}
+
+.main-container {
+  padding: 30px;
+  color: #34495e;
+}
+.main-container .title {
+  margin-bottom: 30px;
+  font-size: 20px;
+}
+.main-container .app-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.main-container .app-item {
+  padding: 12px;
+  box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+.main-container .app-item:hover {
+  box-shadow: -2px 1px 10px rgba(0, 0, 0, 0.3);
+}
+.main-container .app-item img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+.main-container .app-item-title {
+  width: 60px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

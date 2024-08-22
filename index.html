@@ -8,13 +8,14 @@
   <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/reset.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/media.small.css">
-  <link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/c/font_4658242_qt9tqbx026o.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/iconfont.css">
   <script defer src="./assets/js/alpine.min.js"></script>
   <!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> -->
 </head>
 
 <body>
   <div class="app" id="view-small">
+    <!-- 搜索区域 -->
     <div x-data="search" class="search-container">
       <div class="search-content">
         <ul class="search-list">
@@ -28,32 +29,48 @@
           </template>
         </ul>
         <div class="search-box">
-          <div class="select-box">
+          <div class="select-box" @click="showSelectBox" role="button">
             <template x-if="!currentSearchData.icon">
-              <div @click="showSelectBox" role="button" x-text="currentSearchData.name"></div>
+              <div x-text="currentSearchData.name"></div>
             </template>
             <template x-if="currentSearchData.icon">
-              <span @click="showSelectBox" role="button" :class="`icon-custom-suf iconfont ${currentSearchData.icon}`"></span>
+              <span :class="`icon-custom-suf iconfont ${currentSearchData.icon}`"></span>
             </template>
-            <template x-if="showSelect">
-              <ul class="select">
-                <template x-for="item in listItem">
-                  <li role="button" :value="item.key" x-text="item.name" @click="onSelectItem(item)"></option>
-                </template>
-              </ul>
-            </template>
+            <ul class="select" x-show="showSelect" x-transition">
+              <template x-for="item in listItem">
+                <li role="button" :value="item.key" x-text="item.name" @click="e => onSelectItem(item, e)"></option>
+              </template>
+            </ul>
           </div>
           <input type="text" x-model="content" @keyup.enter="onSearch"   />
           <span class="icon-custom-search iconfont icon-search" role="button" @click="onSearch"></span>
         </div>
       </div>
     </div>
+
+    <!-- 主要应用区域 -->
+    <div x-data="nav" class="main-container">
+      <div class="title">常用应用</div>
+      <ul class="app-list">
+        <template x-for="item in commonList">
+          <li class="app-item" role="button" @click="window.open(item.url)">
+            <img :src="getFavicon(item.url)" alt="">
+            <div class="app-item-title" x-text="item.title"></div>
+          </li>
+        </template>
+      </ul>
+
+      <div x-html="classListRender"></div>
+    </div>
   </div>
 
+  <script src="./assets/js/axios.min.js"></script>
   <script src="./assets/js/search.js"></script>
+  <script src="./assets/js/nav.js"></script>
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.data('search', searchData)
+      Alpine.data('nav', navData)
     })
   </script>
 </body>

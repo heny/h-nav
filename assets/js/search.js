@@ -97,7 +97,9 @@ function searchData() {
       this.currentSearchData = this.listItem[0]
     },
   
-    onSelectItem(item) {
+    onSelectItem(item, event) {
+      event.stopPropagation()
+
       this.currentSearchData = item
       this.cancelSelectBox()
     },

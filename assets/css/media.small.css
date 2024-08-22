@@ -2,4 +2,7 @@
   #view-small .search-content {
     width: 80vw;
   }
+  #view-small .app-item-title {
+    width: 33px;
+  }
 }

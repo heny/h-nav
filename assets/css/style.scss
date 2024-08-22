@@ -1,3 +1,5 @@
+$main-color: #34495e;
+
 .search-container {
   width: 100vw;
   height: 300px;
@@ -7,7 +9,7 @@
   background-image: url(../img/banner.jpg);
   background-size: cover;
   background-repeat: no-repeat;
-  color: #34495e;
+  color: $main-color;
 
   .search-content {
     width: 50vw;
@@ -68,10 +70,12 @@
         border-right: 1px solid rgb(149, 165, 166, .2);
 
         .select {
-          // border: 1px solid #777;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
           border-radius: 10px;
           overflow: hidden;
+          position: absolute;
+          top: calc(100% + 2px);
+          width: 100%;
 
           li {
             padding: 8px 0;
@@ -84,6 +88,49 @@
           }
         }
       }
+    }
+  }
+}
+
+.main-container {
+  padding: 30px;
+  color: $main-color;
+
+  .title {
+    margin-bottom: 30px;
+    font-size: 20px;
+  }
+
+  .app-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .app-item {
+    padding: 12px;
+    // box-shadow: 2px 0 8px rgba(0, 0, 0, .2);
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+      box-shadow: -2px 1px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    display: flex;
+    align-items: center;
+    img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    &-title {
+      width: 60px;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
