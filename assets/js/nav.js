@@ -1,9 +1,15 @@
 function navData () {
   let self = null;
   return {
+    // 第一级的链接
     commonList: [],
-    classList: [],
+    // 第一级的目录
+    commonClassList: [],
 
+    currentActiveItem: {},
+
+    level: 1,
+    
     init () {
       self = this
       this.getNavList();
@@ -32,16 +38,16 @@ function navData () {
     },
 
     async getNavList () {
-      const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
+      // const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
 
-      if (res.status !== 200 || !res.data?.data) {
-        this.commonList = []
-        return
-      }
+      // if (res.status !== 200 || !res.data?.data) {
+      //   this.commonList = []
+      //   return
+      // }
 
-      const data = res.data?.data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
+      // const data = res.data?.data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
 
-      // const data = constantData
+      const data = constantData
 
       // 常用的书签
       let commonList = []
@@ -50,43 +56,38 @@ function navData () {
         item.children ? classList.push(item) : commonList.push(item)
       }
       this.commonList = commonList
-      this.classList = classList
+      this.commonClassList = classList
+      this.currentActiveItem = this.commonClassList[0]
 
-      console.log('hhh - data', data, classList)
+      console.log('hhh - data', data, classList, this.currentActiveItem)
     },
 
-    get classListRender () {
-      function generateDL(data, index) {
-        let html = '<dl class="other-book">';
+    onDirectoryChange(item) {
+      this.currentActiveItem = item
+      ++this.level
+    },
 
-        let linkHtml = '<div class="link-group">'
-        data.forEach((item) => {
-          if (item.children) {
-            html += `<dt style="margin-left: ${index * 20}px; margin-bottom: 10px;">${item.title} 层级：${index}</dt>`;
-            html += `<dd style="margin-left: ${index * 20}px;">${generateDL(item.children, index + 1)}</dd>`;
-          } else {
-            linkHtml += `
-              <dd style="margin-left: ${index * 20}px;">
-                <a class="other-link-item" role="button" target="_blank" href="${item.url}">
-                  <img src="${self.getFaviconSync(item.url)}" alt="${item.title}" style="width: 20px; height: 20px; vertical-align: middle;">
-                  <div class="other-link-item-title">${item.title}</div>
-                </a>
-              </dd>
-            `;
+    findItemById(data, id) {
+      for (const item of data) {
+        // 检查当前项
+        if (item.id === id) {
+          return item;
+        }
+        // 如果有 children，则递归查找
+        if (item.children) {
+          const found = this.findItemById(item.children, id);
+          if (found) {
+            return found;
           }
-        });
-        linkHtml += '</div>'
-        html += linkHtml;
-
-        html += '</dl>';
-        return html;
+        }
       }
+      return null; // 如果未找到
+    },
 
-      const copyClassList = JSON.parse(JSON.stringify(this.classList))
-    
-      const resultHTML = generateDL(copyClassList, 0);
-      console.log('hhh - copyClassList', copyClassList)
-      return resultHTML;
-    }
+    onBack() {
+      --this.level
+      const preItem = this.findItemById(this.commonClassList, this.currentActiveItem.parentId)
+      this.currentActiveItem = preItem
+    },
   }
 }
