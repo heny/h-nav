@@ -163,7 +163,7 @@ $active-color: #8e44ad;
 
 .current-nav-list {
   .app-item {
-    width: 48%;
+    width: calc(50% - 20px);
 
     &-title {
       width: 100%;
