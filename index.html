@@ -8,13 +8,14 @@
   <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/reset.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/media.small.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/media.large.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/iconfont.css">
   <script defer src="./assets/js/alpine.min.js"></script>
   <!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> -->
 </head>
 
 <body>
-  <div class="app" id="view-small">
+  <div class="app view-small view-large">
     <!-- 搜索区域 -->
     <div x-data="search" class="search-container">
       <div class="search-content">
@@ -60,14 +61,14 @@
       <div class="title" style="margin-top: 30px">目录</div>
       <ul class="common-list">
         <template x-for="item in commonClassList">
-          <li x-text="item.title" role="button" @click="currentActiveItem = item" :class="{
+          <li x-text="item.title" role="button" @click="onTabChange(item)" :class="{
             'common-list-item': true,
             'active': item.id === currentActiveItem.id
           }"></li>
         </template>
       </ul>
 
-      <div class="app-list">
+      <div class="current-list">
         <template x-if="level !== 1">
           <li class="app-item" role="button" @click="onBack">
             <span class="iconfont icon-subdirectory-arrow-l" style="margin-right: 10px;"></span>
@@ -75,14 +76,16 @@
           </li>
         </template>
 
-        <template x-for="item in _.filter(currentActiveItem.children, 'children')">
-          <li class="app-item" role="button" @click="onDirectoryChange(item)">
-            <span class="iconfont icon-directory" style="margin-right: 10px;"></span>
-            <div class="app-item-title" x-text="item.title"></div>
-          </li>
-        </template>
+        <li class="flex current-nav-dir">
+          <template x-for="item in _.filter(currentActiveItem.children, 'children')">
+            <li class="app-item" role="button" @click="onDirectoryChange(item)">
+              <span class="iconfont icon-directory" style="margin-right: 10px;"></span>
+              <div class="app-item-title" x-text="item.title"></div>
+            </li>
+          </template>
+        </li>
 
-        <li style="width: 100%" class="flex current-nav-list">
+        <li class="current-nav-list">
           <template x-for="item in _.filter(currentActiveItem.children, 'url')">
             <li class="app-item" role="button" @click="window.open(item.url)">
               <img :src="getFavicon(item.url)" alt="">

@@ -67,6 +67,11 @@ function navData () {
       ++this.level
     },
 
+    onTabChange(item) {
+      this.currentActiveItem = item
+      this.level = 1
+    },
+
     findItemById(data, id) {
       for (const item of data) {
         // 检查当前项

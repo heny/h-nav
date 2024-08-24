@@ -1,0 +1,13 @@
+@media (min-width: 1440px) {
+ .view-large {
+    .current-nav-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+
+      .app-item {
+        width: 100%;
+      }
+    }
+  }
+}
