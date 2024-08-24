@@ -38,16 +38,20 @@ function navData () {
     },
 
     async getNavList () {
-      // const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
+      let data = []
 
-      // if (res.status !== 200 || !res.data?.data) {
-      //   this.commonList = []
-      //   return
-      // }
-
-      // const data = res.data?.data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
-
-      const data = constantData
+      if(!window.IS_LOCAL_DEV) {
+        const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
+  
+        if (res.status !== 200 || !res.data?.data) {
+          this.commonList = []
+          return
+        }
+  
+        data = res.data?.data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
+      } else {
+        data = constantData
+      }
 
       // 常用的书签
       let commonList = []
