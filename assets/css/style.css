@@ -143,10 +143,7 @@
 .current-nav-list .app-item {
   width: calc(50% - 20px);
 }
-.current-nav-list .app-item-title {
-  width: 50%;
-}
 
 .current-nav-dir {
-  margin-bottom: 20px;
+  margin: 20px 0;
 }

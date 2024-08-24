@@ -172,13 +172,9 @@ $active-color: #8e44ad;
 
   .app-item {
     width: calc(50% - 20px);
-
-    &-title {
-      width: 50%;
-    }
   }
 }
 
 .current-nav-dir {
-  margin-bottom: 20px;
+  margin: 20px 0;
 }

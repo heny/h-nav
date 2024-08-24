@@ -8,10 +8,21 @@ function navData () {
 
     currentActiveItem: {},
 
+    // 是否本地开发
+    isLocalDev: false,
+
     level: 1,
-    
+
     init () {
       self = this
+
+      const localHosts = [
+        'localhost',
+        '127.0.0.1',
+        '0.0.0.0'
+      ]
+      this.isLocalDev = localHosts.includes(window.location.hostname)
+
       this.getNavList();
     },
 
@@ -31,7 +42,7 @@ function navData () {
       })
     },
 
-    getFaviconSync(url) {
+    getFaviconSync (url) {
       const host = new URL(url).host
       const faviconUrl = `https://api.iowen.cn/favicon/${host}.png`
       return faviconUrl
@@ -40,18 +51,20 @@ function navData () {
     async getNavList () {
       let data = []
 
-      if(!window.IS_LOCAL_DEV) {
+      if (!this.isLocalDev) {
         const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
-  
+
         if (res.status !== 200 || !res.data?.data) {
           this.commonList = []
           return
         }
-  
-        data = res.data?.data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
+
+        data = res.data
       } else {
         data = constantData
       }
+
+      data = data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
 
       // 常用的书签
       let commonList = []
@@ -66,17 +79,17 @@ function navData () {
       console.log('hhh - data', data, classList, this.currentActiveItem)
     },
 
-    onDirectoryChange(item) {
+    onDirectoryChange (item) {
       this.currentActiveItem = item
       ++this.level
     },
 
-    onTabChange(item) {
+    onTabChange (item) {
       this.currentActiveItem = item
       this.level = 1
     },
 
-    findItemById(data, id) {
+    findItemById (data, id) {
       for (const item of data) {
         // 检查当前项
         if (item.id === id) {
@@ -93,7 +106,7 @@ function navData () {
       return null; // 如果未找到
     },
 
-    onBack() {
+    onBack () {
       --this.level
       const preItem = this.findItemById(this.commonClassList, this.currentActiveItem.parentId)
       this.currentActiveItem = preItem

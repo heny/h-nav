@@ -78,26 +78,30 @@
 
         <li class="flex current-nav-dir">
           <template x-for="item in _.filter(currentActiveItem.children, 'children')">
-            <li class="app-item" role="button" @click="onDirectoryChange(item)">
-              <span class="iconfont icon-directory" style="margin-right: 10px;"></span>
-              <div class="app-item-title" x-text="item.title"></div>
-            </li>
+            <template x-if="!item.title.includes('隐藏')">
+              <li class="app-item" role="button" @click="onDirectoryChange(item)">
+                <span class="iconfont icon-directory" style="margin-right: 10px;"></span>
+                <div class="app-item-title" x-text="item.title"></div>
+              </li>
+            </template>
           </template>
         </li>
 
         <li class="current-nav-list">
           <template x-for="item in _.filter(currentActiveItem.children, 'url')">
-            <li class="app-item" role="button" @click="window.open(item.url)">
-              <img :src="getFavicon(item.url)" alt="">
-              <div class="app-item-title" x-text="item.title" :title="item.title"></div>
-            </li>
+            <template x-if="!item.title.includes('隐藏')">
+              <li class="app-item" role="button" @click="window.open(item.url)">
+                <img :src="getFavicon(item.url)" alt="">
+                <div class="app-item-title" x-text="item.title" :title="item.title"></div>
+              </li>
+            </template>
           </template>
         </li>
       </div>
     </div>
   </div>
 
-  <script async src="./assets/js/common.js"></script>
+  <script src="./assets/js/data.js"></script>
   <script src="./assets/js/axios.min.js"></script>
   <script src="./assets/js/lodash.min.js"></script>
   <script src="./assets/js/search.js"></script>
