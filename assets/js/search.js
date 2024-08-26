@@ -21,6 +21,11 @@ function searchData() {
         key: 'search',
         children: [
           {
+            name: '本地',
+            key: 'local',
+            icon: 'icon-bendi'
+          },
+          {
             name: '百度',
             key: 'baidu',
             icon: 'icon-baidu',

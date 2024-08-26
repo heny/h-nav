@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>导航网站</title>
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/reset.css">
   <link rel="stylesheet" type="text/css" href="./assets/css/media.small.css">
@@ -15,7 +16,14 @@
 </head>
 
 <body>
-  <div class="app view-small view-large">
+  <div class="app view-small view-large" x-data>
+    <template x-if="$store.pageStore.loading">
+      <div class="loading">
+        <img src="/assets/img/loading.gif" alt="">
+        Loading...
+      </div>
+    </template>
+
     <!-- 搜索区域 -->
     <div x-data="search" class="search-container">
       <div class="search-content">
@@ -131,10 +139,12 @@
   <script src="./assets/js/data.js"></script>
   <script src="./assets/js/axios.min.js"></script>
   <script src="./assets/js/lodash.min.js"></script>
+  <script src="./assets/js/pageStore.js"></script>
   <script src="./assets/js/search.js"></script>
   <script src="./assets/js/nav.js"></script>
   <script>
     document.addEventListener('alpine:init', () => {
+      Alpine.store('pageStore', pageStore)
       Alpine.data('search', searchData)
       Alpine.data('nav', navData)
     })

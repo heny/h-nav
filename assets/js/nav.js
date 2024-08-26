@@ -75,9 +75,12 @@ function navData () {
     },
 
     async getNavList () {
+      console.log('hhh - this.$store.pageStore', this.$store.pageStore)
+      this.$store.pageStore.loading = true
+
       let data = []
 
-      if (!this.isLocalDev) {
+      if (true || !this.isLocalDev) {
         const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
 
         if (res.status !== 200 || !res.data?.data) {
@@ -89,6 +92,9 @@ function navData () {
       } else {
         data = constantData
       }
+
+      this.$store.pageStore.loading = false
+      console.log('hhh - this.$store.pageStore', this.$store.pageStore)
 
       data = data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
 
