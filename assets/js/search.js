@@ -1,5 +1,5 @@
 // %s 分割
-function searchData() {
+function searchData () {
   let self = null;
 
   return {
@@ -12,33 +12,33 @@ function searchData() {
     showSearchResult: true,
     searchResultList: [],
 
-    flattenList(arr) {
+    flattenList (arr) {
       let result = [];
-    
+
       for (const item of arr) {
-          // 跳过标题包含 "隐藏" 的项
-          if (item.title && item.title.includes("隐藏")) {
-              continue; // 跳过当前项
-          }
-          
-          if(item.url) {
-            result.push(item); // 添加当前项
-          }
-          if (item.children && Array.isArray(item.children)) {
-              // 递归调用平铺子项
-              result = result.concat(this.flattenList(item.children));
-          }
+        // 跳过标题包含 "隐藏" 的项
+        if (item.title && item.title.includes("隐藏")) {
+          continue; // 跳过当前项
+        }
+
+        if (item.url) {
+          result.push(item); // 添加当前项
+        }
+        if (item.children && Array.isArray(item.children)) {
+          // 递归调用平铺子项
+          result = result.concat(this.flattenList(item.children));
+        }
       }
-      
+
       return result;
     },
-  
-    init() {
+
+    init () {
       self = this
       this.currentSearchCateGory = this.list[0].key
       this.currentSearchData = this.listItem[0]
     },
-    
+
     list: [
       {
         name: '搜索',
@@ -63,7 +63,7 @@ function searchData() {
           },
           {
             name: 'Bing',
-            key:'bing',
+            key: 'bing',
             icon: 'icon-Bing',
             url: 'https://www.bing.com/search?q=fdsa'
           },
@@ -76,7 +76,7 @@ function searchData() {
       },
       {
         name: '社交',
-        key:'social',
+        key: 'social',
         children: [
           {
             name: '掘金',
@@ -116,59 +116,69 @@ function searchData() {
         ]
       }
     ],
-  
-    get listItem() {
+
+    get listItem () {
       return this.list.find(item => item.key === this.currentSearchCateGory).children
     },
 
-    onFilterLocalList() {
-      if(!this.content) {
+    // 搜索本地书签
+    onFilterLocalList () {
+      if (!this.content) {
         this.searchResultList = []
         return
       }
-
       const result = this.flattenList(this.$store.pageStore.data)
-      this.searchResultList = result.filter(item => item.title.includes(this.content)).slice(0, 10)
+      this.searchResultList = result.filter(item =>
+        item.title.toLowerCase().includes(this.content.toLowerCase())
+      ).slice(0, 20)
     },
 
-    onSearchListItem(item) {
+    onSearchListItem (item) {
       this.currentSearchCateGory = item.key
       this.currentSearchData = this.listItem[0]
     },
-  
-    onSelectItem(item, event) {
+
+    onSelectItem (item, event) {
       event.stopPropagation()
 
       this.currentSearchData = item
       this.cancelSelectBox()
     },
-  
-    cancelSelectBox() {
+
+    onSearchResultClick (item, event) {
+      event.stopPropagation()
+
+      if (this.currentSearchData.key === 'local') {
+        window.open(item.url)
+      }
+    },
+
+    cancelSelectBox () {
       this.showSelect = false
       document.removeEventListener('click', this.selectBoxEvent)
     },
-  
-    selectBoxEvent() {
+
+    selectBoxEvent () {
       self.cancelSelectBox()
     },
 
-    onFocus() {
+    onFocus () {
       this.showSearchResult = true
       this.onFilterLocalList()
     },
 
-    onBlur() {
+    onBlur () {
       this.showSearchResult = false
       this.searchResultList = []
     },
 
-    onSearch() {
-      if(!this.content) {
+    onSearch () {
+      if (!this.content) {
         this.searchResultList = []
         return
       }
 
-      if(this.currentSearchData.key === 'local') {
+      if (this.currentSearchData.key === 'local') {
         this.onFilterLocalList()
       } else {
         const skipUrl = this.currentSearchData.url.replace('%s', this.content)
@@ -177,25 +187,25 @@ function searchData() {
       }
     },
 
-    onChange() {
+    onChange () {
       // 实时搜索的key
-      if(this.currentSearchData.key === 'local') {
+      if (this.currentSearchData.key === 'local') {
         this.onSearch()
       }
     },
 
-    highlightMatch(title) {
+    highlightMatch (title) {
       if (!this.content) return title; // 如果没有查询，返回原始标题
       const escapedQuery = this.content.replace(/[-\/\\^$.*+?()[\]{}|]/g, '\\$&');
       const regex = new RegExp(escapedQuery, 'gi');
       return title.replace(regex, `<span style="color: #e74c3c;">$&</span>`);
     },
-  
-    showSelectBox(event) {
+
+    showSelectBox (event) {
       // 避免点击就执行selectBoxEvent
       event.stopPropagation();
-      
-      if(this.showSelect) {
+
+      if (this.showSelect) {
         this.cancelSelectBox()
       } else {
         this.showSelect = true

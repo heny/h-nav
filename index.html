@@ -63,10 +63,10 @@
             @blur="onBlur" 
           />
           <!-- 搜索结果区域 -->
-          <!-- <ul class="search-result-container" x-show="showSearchResult && content" x-transition> -->
-          <ul class="search-result-container">
+          <ul class="search-result-container" x-show="showSearchResult && content">
+          <!-- <ul class="search-result-container"> -->
             <template x-for="item in searchResultList">
-              <li role="button" class="search-result-item" x-html="highlightMatch(item.title)" :title="item.title">
+              <li role="button" class="search-result-item" x-html="highlightMatch(item.title)" :title="item.title" @click="e => onSearchResultClick(item, e)">
               </li>
             </template>
           </ul>
