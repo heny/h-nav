@@ -59,7 +59,7 @@ function navData () {
           return
         }
 
-        data = res.data
+        data = res.data.data
       } else {
         data = constantData
       }
