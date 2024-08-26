@@ -20,7 +20,7 @@ function navData () {
     // 当前处于展开位置的应用
     currentExpandIndex: null,
 
-    init () {
+    async init () {
       self = this
 
       const localHosts = [
@@ -30,7 +30,7 @@ function navData () {
       ]
       this.isLocalDev = localHosts.includes(window.location.hostname)
 
-      this.getNavList()
+      await this.getNavList()
 
       this.resizeAppChange()
       window.addEventListener('resize', this.resizeAppChange.bind(this))
@@ -101,7 +101,6 @@ function navData () {
       this.commonList = commonList
       this.commonClassList = classList
       this.currentActiveItem = this.commonClassList[0]
-
       console.log('hhh - data', data, classList, this.currentActiveItem)
     },
 
