@@ -49,13 +49,40 @@
     <!-- 主要应用区域 -->
     <div x-data="nav" class="main-container">
       <div class="title">常用应用</div>
-      <ul class="app-list">
-        <template x-for="item in commonList">
-          <li class="app-item" role="button" @click="window.open(item.url)">
-            <img :src="getFavicon(item.url)" alt="">
-            <div class="app-item-title" x-text="item.title" :title="item.title"></div>
+      <ul class="app-list grid-small" :style="{
+        'overflow': showExpand ? 'hidden' : 'visible',
+        'height': showExpand ? '72px' : 'auto'
+      }">
+        <template x-for="(item,index) in commonList">
+          <li class="app-item" role="button" @click="onCommonItem(item, index === currentExpandIndex)">
+            <template x-if="!(index === currentExpandIndex)">
+              <img :src="getFavicon(item.url)" alt="">
+            </template>
+
+            <template x-if="(index === currentExpandIndex)">
+              <div style="height: 30px;">
+                <template x-if="showExpand">
+                  <span class="iconfont icon-zhankai img"></span>
+                </template>
+                <template x-if="!showExpand">
+                  <img :src="getFavicon(item.url)" alt="">
+                </template>
+              </div>
+            </template>
+            
+            <div class="app-item-title" x-text="(index === currentExpandIndex) && showExpand ? '展开' : item.title" :title="(index === currentExpandIndex) && showExpand ? '展开' : item.title"></div>
           </li>
         </template>
+        <template x-if="!showExpand">
+          <li class="app-item" role="button" @click="showExpand = true">
+            <span class="iconfont icon-shouqi img"></span>
+            <div class="app-item-title">收起</div>
+          </li>
+        </template>
+
+        <!-- <template x-if="showExpand">
+          <li class="expand" role="button">展开</li>
+        </template> -->
       </ul>
 
       <div class="title" style="margin-top: 30px">目录</div>
@@ -76,7 +103,7 @@
           </li>
         </template>
 
-        <li class="flex current-nav-dir">
+        <li class="current-nav-dir grid-small">
           <template x-for="item in _.filter(currentActiveItem.children, 'children')">
             <template x-if="!item.title.includes('隐藏')">
               <li class="app-item" role="button" @click="onDirectoryChange(item)">

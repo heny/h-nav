@@ -11,7 +11,14 @@ function navData () {
     // 是否本地开发
     isLocalDev: false,
 
+    // 目录层级
     level: 1,
+
+    // 常用应用展开
+    showExpand: true,
+
+    // 当前处于展开位置的应用
+    currentExpandIndex: null,
 
     init () {
       self = this
@@ -23,7 +30,26 @@ function navData () {
       ]
       this.isLocalDev = localHosts.includes(window.location.hostname)
 
-      this.getNavList();
+      this.getNavList()
+
+      this.resizeAppChange()
+      window.addEventListener('resize', this.resizeAppChange.bind(this))
+    },
+
+    resizeAppChange () {
+      this.$nextTick(() => {
+        const gridContainer = document.querySelector('.app-list.grid-small');
+        const columns = getComputedStyle(gridContainer).gridTemplateColumns.split(' ').length;
+        this.currentExpandIndex = columns - 1;
+      })
+    },
+
+    onCommonItem(item, isExpand) {
+      if(!isExpand) {
+        window.open(item.url)
+      } else {
+        this.showExpand = false
+      }
     },
 
     async getFavicon (url) {

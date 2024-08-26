@@ -4,38 +4,15 @@
       width: 80vw;
     }
     .app-list {
+      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
       
       .app-item {
-        width: auto;
-        padding: 7px;
 
-        img {
+        img, .img {
           margin-right: 0;
         }
         .app-item-title {
           display: none;
-        }
-      }
-    }
-
-    .current-nav-dir {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-
-      .app-item {
-        width: 100%;
-      }
-    }
-
-    .current-nav-list {
-      grid-template-columns: repeat(1, 1fr);
-
-      .app-item {
-        width: 100%;
-
-        &-title {
-          width: 100%;
         }
       }
     }

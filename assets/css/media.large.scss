@@ -1,12 +1,13 @@
 @media (min-width: 1440px) {
  .view-large {
     .current-nav-list {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      // grid-template-columns: repeat(4, 1fr);
+      
 
       .app-item {
         width: 100%;
+        // 允许超出宽度变点状
+        min-width: 0;
       }
     }
   }
