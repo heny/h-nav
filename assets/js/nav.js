@@ -1,5 +1,4 @@
 function navData () {
-  let self = null;
   return {
     // 第一级的链接
     commonList: [],
@@ -75,12 +74,9 @@ function navData () {
     },
 
     async getNavList () {
-      console.log('hhh - this.$store.pageStore', this.$store.pageStore)
       this.$store.pageStore.loading = true
 
-      let data = []
-
-      if (true || !this.isLocalDev) {
+      if (!this.isLocalDev) {
         const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
 
         if (res.status !== 200 || !res.data?.data) {
@@ -88,26 +84,25 @@ function navData () {
           return
         }
 
-        data = res.data.data
+        this.$store.pageStore.data = res.data.data
       } else {
-        data = constantData
+        this.$store.pageStore.data = constantData
       }
 
       this.$store.pageStore.loading = false
-      console.log('hhh - this.$store.pageStore', this.$store.pageStore)
 
-      data = data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
+      this.$store.pageStore.data = this.$store.pageStore.data[0]?.children?.filter(item => item.title === '书签栏')?.[0]?.children;
 
       // 常用的书签
       let commonList = []
       let classList = []
-      for (let item of data) {
+      for (let item of this.$store.pageStore.data) {
         item.children ? classList.push(item) : commonList.push(item)
       }
       this.commonList = commonList
       this.commonClassList = classList
       this.currentActiveItem = this.commonClassList[0]
-      console.log('hhh - data', data, classList, this.currentActiveItem)
+      console.log('hhh - this.$store.pageStore.data', this.$store.pageStore.data, classList, this.currentActiveItem)
     },
 
     onDirectoryChange (item) {

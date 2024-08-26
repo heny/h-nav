@@ -8,6 +8,30 @@ function searchData() {
     currentSearchData: {},
     // 是否显示下拉框
     showSelect: false,
+
+    showSearchResult: true,
+    searchResultList: [],
+
+    flattenList(arr) {
+      let result = [];
+    
+      for (const item of arr) {
+          // 跳过标题包含 "隐藏" 的项
+          if (item.title && item.title.includes("隐藏")) {
+              continue; // 跳过当前项
+          }
+          
+          if(item.url) {
+            result.push(item); // 添加当前项
+          }
+          if (item.children && Array.isArray(item.children)) {
+              // 递归调用平铺子项
+              result = result.concat(this.flattenList(item.children));
+          }
+      }
+      
+      return result;
+    },
   
     init() {
       self = this
@@ -97,6 +121,16 @@ function searchData() {
       return this.list.find(item => item.key === this.currentSearchCateGory).children
     },
 
+    onFilterLocalList() {
+      if(!this.content) {
+        this.searchResultList = []
+        return
+      }
+
+      const result = this.flattenList(this.$store.pageStore.data)
+      this.searchResultList = result.filter(item => item.title.includes(this.content)).slice(0, 10)
+    },
+
     onSearchListItem(item) {
       this.currentSearchCateGory = item.key
       this.currentSearchData = this.listItem[0]
@@ -118,10 +152,43 @@ function searchData() {
       self.cancelSelectBox()
     },
 
+    onFocus() {
+      this.showSearchResult = true
+      this.onFilterLocalList()
+    },
+
+    onBlur() {
+      this.showSearchResult = false
+      this.searchResultList = []
+    },
+
     onSearch() {
-      if(!this.content) return
-      const skipUrl = this.currentSearchData.url.replace('%s', this.content)
-      window.open(skipUrl)
+      if(!this.content) {
+        this.searchResultList = []
+        return
+      }
+
+      if(this.currentSearchData.key === 'local') {
+        this.onFilterLocalList()
+      } else {
+        const skipUrl = this.currentSearchData.url.replace('%s', this.content)
+        window.open(skipUrl)
+        this.content = '';
+      }
+    },
+
+    onChange() {
+      // 实时搜索的key
+      if(this.currentSearchData.key === 'local') {
+        this.onSearch()
+      }
+    },
+
+    highlightMatch(title) {
+      if (!this.content) return title; // 如果没有查询，返回原始标题
+      const escapedQuery = this.content.replace(/[-\/\\^$.*+?()[\]{}|]/g, '\\$&');
+      const regex = new RegExp(escapedQuery, 'gi');
+      return title.replace(regex, `<span style="color: #e74c3c;">$&</span>`);
     },
   
     showSelectBox(event) {

@@ -27,7 +27,33 @@ $active-color: #8e44ad;
   align-items: center;
   z-index: 999;
   img {
+    width: 100px;
     margin-bottom: 10px;
+  }
+}
+
+.search-result-container {
+  position: absolute;
+  left: 70px;
+  top: calc(100% + 2px);
+  z-index: 2;
+
+  border-radius: 10px;
+  background-color: #fff;
+  width: calc(100% - 70px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
+
+  .search-result-item {
+    padding: 10px 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid rgb(119, 119, 119, 0.3);
+    }
   }
 }
 

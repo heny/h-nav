@@ -27,12 +27,15 @@
     <!-- 搜索区域 -->
     <div x-data="search" class="search-container">
       <div class="search-content">
+        <!-- 搜索列表 -->
         <ul class="search-list">
           <template x-for="item in list">
             <li x-text="item.name" :class="currentSearchCateGory === item.key ? 'active' : '' " role="button"
               @click="onSearchListItem(item)"></li>
           </template>
         </ul>
+
+        <!-- 搜索框 -->
         <div class="search-box">
           <div class="select-box" @click="showSelectBox" role="button">
             <template x-if="!currentSearchData.icon">
@@ -41,14 +44,33 @@
             <template x-if="currentSearchData.icon">
               <span :class="`icon-custom-suf iconfont ${currentSearchData.icon}`"></span>
             </template>
+
+            <!-- 搜索下拉项 -->
             <ul class="select" x-show="showSelect" x-transition">
               <template x-for="item in listItem">
                 <li role="button" :value="item.key" x-text="item.name" @click="e => onSelectItem(item, e)">
                   </option>
               </template>
             </ul>
+
           </div>
-          <input type="text" x-model="content" @keyup.enter="onSearch" />
+          <input 
+            type="text" 
+            x-model="content" 
+            @keyup.enter="onSearch" 
+            @input="onChange"
+            @focus="onFocus" 
+            @blur="onBlur" 
+          />
+          <!-- 搜索结果区域 -->
+          <!-- <ul class="search-result-container" x-show="showSearchResult && content" x-transition> -->
+          <ul class="search-result-container">
+            <template x-for="item in searchResultList">
+              <li role="button" class="search-result-item" x-html="highlightMatch(item.title)" :title="item.title">
+              </li>
+            </template>
+          </ul>
+
           <span class="icon-custom-search iconfont icon-search" role="button" @click="onSearch"></span>
         </div>
       </div>
@@ -88,9 +110,6 @@
           </li>
         </template>
 
-        <!-- <template x-if="showExpand">
-          <li class="expand" role="button">展开</li>
-        </template> -->
       </ul>
 
       <div class="title" style="margin-top: 30px">目录</div>
