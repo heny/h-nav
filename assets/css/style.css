@@ -47,6 +47,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.search-result-container .search-result-item.active, .search-result-container .search-result-item:hover {
+  background-color: rgba(142, 68, 173, 0.2);
+}
 .search-result-container .search-result-item:not(:last-child) {
   border-bottom: 1px solid rgba(119, 119, 119, 0.3);
 }
@@ -69,6 +72,7 @@
   display: flex;
   justify-content: center;
   margin-bottom: 5px;
+  color: #fff;
 }
 .search-container .search-content .search-list li.active {
   color: #8e44ad;

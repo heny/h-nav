@@ -6,6 +6,7 @@ function searchData () {
     content: '',
     currentSearchCateGory: '',
     currentSearchData: {},
+    selectSearchListIndex: -1,
     // 是否显示下拉框
     showSelect: false,
 
@@ -142,14 +143,18 @@ function searchData () {
       event.stopPropagation()
 
       this.currentSearchData = item
+      this.content = ''
+      this.searchResultList = []
       this.cancelSelectBox()
     },
 
     onSearchResultClick (item, event) {
+      // 使用mousedown事件，而不是click事件，避免先失焦
       event.stopPropagation()
 
       if (this.currentSearchData.key === 'local') {
         window.open(item.url)
+        this.content = '';
       }
     },
 
@@ -165,11 +170,53 @@ function searchData () {
     onFocus () {
       this.showSearchResult = true
       this.onFilterLocalList()
+
+      window.addEventListener('keydown', this.searchKeydown)
+    },
+
+    searchKeydown (event) {
+      console.log('hhh - event.key', event.key)
+      if (event.key === 'ArrowDown') {
+        ++self.selectSearchListIndex;
+        self.selectSearchListIndex = Math.max(0, Math.min(self.selectSearchListIndex, self.searchResultList.length - 1));
+        const currentItem = self.searchResultList[self.selectSearchListIndex]
+        self.content = currentItem.url
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault()
+        --self.selectSearchListIndex;
+        if (self.selectSearchListIndex <= 0) {
+          self.selectSearchListIndex = 0
+        }
+        const currentItem = self.searchResultList[self.selectSearchListIndex]
+        self.content = currentItem.url
+      }
+
+      if (event.key === 'Enter') {
+        window.open(self.parseUrl())
+        self.content = ''
+      }
+    },
+
+    parseUrl () {
+      const text = self.content
+      if(text.includes('http')) {
+        return text
+      }
+
+      if(!text.includes('.')) {
+        return `https://www.baidu.com/s?ie=UTF-8&wd=${text}`
+      }
+
+      return `http://${text}`
     },
 
     onBlur () {
       this.showSearchResult = false
       this.searchResultList = []
+      this.selectSearchListIndex = -1
+      window.removeEventListener('keydown', this.searchKeydown)
     },
 
     onSearch () {
@@ -191,7 +238,12 @@ function searchData () {
       // 实时搜索的key
       if (this.currentSearchData.key === 'local') {
         this.onSearch()
+        return
       }
+
+      axios.get(`https://suggestion.baidu.com/su?p=3&ie=UTF-8&cb=&wd=${this.content}`).then(res => {
+        console.log('hhh - res', res)
+      })
     },
 
     highlightMatch (title) {

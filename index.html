@@ -61,12 +61,20 @@
             @input="onChange"
             @focus="onFocus" 
             @blur="onBlur" 
+            placeholder="请输入关键字"
           />
           <!-- 搜索结果区域 -->
           <ul class="search-result-container" x-show="showSearchResult && content">
-          <!-- <ul class="search-result-container"> -->
-            <template x-for="item in searchResultList">
-              <li role="button" class="search-result-item" x-html="highlightMatch(item.title)" :title="item.title" @click="e => onSearchResultClick(item, e)">
+            <template x-for="(item, idx) in searchResultList">
+              <li role="button" 
+                :class="{
+                  'search-result-item': true,
+                  'active': selectSearchListIndex === idx
+                }" 
+                x-html="highlightMatch(item.title)" 
+                :title="item.title" 
+                @mousedown="e => onSearchResultClick(item, e)"
+              >
               </li>
             </template>
           </ul>
@@ -112,7 +120,7 @@
 
       </ul>
 
-      <div class="title" style="margin-top: 30px">目录</div>
+      <div style="margin-top: 40px"></div>
       <ul class="common-list">
         <template x-for="item in commonClassList">
           <li x-text="item.title" role="button" @click="onTabChange(item)" :class="{

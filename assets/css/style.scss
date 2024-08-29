@@ -51,6 +51,10 @@ $active-color: #8e44ad;
     overflow: hidden;
     text-overflow: ellipsis;
 
+    &.active, &:hover {
+      background-color: rgb(142,68,173, .2);
+    }
+
     &:not(:last-child) {
       border-bottom: 1px solid rgb(119, 119, 119, 0.3);
     }
@@ -75,6 +79,7 @@ $active-color: #8e44ad;
       display: flex;
       justify-content: center;
       margin-bottom: 5px;
+      color: #fff;
 
       li {
         &.active {
