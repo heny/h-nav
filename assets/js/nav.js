@@ -87,9 +87,9 @@ function navData () {
 
           this.$store.pageStore.data = res.data.data
         } catch (error) {
+          this.$store.pageStore.loading = false
           const result = confirm('加载超时，是否重新加载？')
           if(result) location.reload()
-          this.$store.pageStore.loading = false
           return
         }
       } else {
