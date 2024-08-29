@@ -43,8 +43,8 @@ function navData () {
       })
     },
 
-    onCommonItem(item, isExpand) {
-      if(!isExpand) {
+    onCommonItem (item, isExpand) {
+      if (!isExpand) {
         window.open(item.url)
       } else {
         this.showExpand = false
@@ -77,14 +77,21 @@ function navData () {
       this.$store.pageStore.loading = true
 
       if (!this.isLocalDev) {
-        const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json')
+        try {
+          const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json', { timeout: 15000 })
 
-        if (res.status !== 200 || !res.data?.data) {
-          this.commonList = []
+          if (res.status !== 200 || !res.data?.data) {
+            this.commonList = []
+            return
+          }
+
+          this.$store.pageStore.data = res.data.data
+        } catch (error) {
+          const result = confirm('加载超时，是否重新加载？')
+          if(result) location.reload()
+          this.$store.pageStore.loading = false
           return
         }
-
-        this.$store.pageStore.data = res.data.data
       } else {
         this.$store.pageStore.data = constantData
       }
