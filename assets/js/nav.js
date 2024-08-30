@@ -109,7 +109,7 @@ function navData () {
       this.commonList = commonList
       this.commonClassList = classList
       this.currentActiveItem = this.commonClassList[0]
-      console.log('hhh - this.$store.pageStore.data', this.$store.pageStore.data, classList, this.currentActiveItem)
+      console.log('hhh - this.commonClassList', this.commonClassList)
     },
 
     onDirectoryChange (item) {

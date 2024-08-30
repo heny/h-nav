@@ -38,6 +38,21 @@ function searchData () {
       self = this
       this.currentSearchCateGory = this.list[0].key
       this.currentSearchData = this.listItem[0]
+      window.addEventListener('keydown', this.autoSearch)
+    },
+
+    destroy() {
+      window.removeEventListener('keydown', this.autoSearch)
+    },
+
+    autoSearch (event) {
+      if (event.key === '/' && document.activeElement.tagName !== 'INPUT') {
+        // 阻止默认行为（避免在输入框中输入"/"）
+        event.preventDefault();
+
+        // 找到搜索输入框并聚焦
+        self.$refs.searchInput.focus();
+      }
     },
 
     list: [
@@ -201,11 +216,11 @@ function searchData () {
 
     parseUrl () {
       const text = self.content
-      if(text.includes('http')) {
+      if (text.includes('http')) {
         return text
       }
 
-      if(!text.includes('.')) {
+      if (!text.includes('.')) {
         return `https://www.baidu.com/s?ie=UTF-8&wd=${text}`
       }
 

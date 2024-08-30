@@ -61,7 +61,8 @@
             @input="onChange"
             @focus="onFocus" 
             @blur="onBlur" 
-            placeholder="请输入关键字"
+            x-ref="searchInput"
+            placeholder="按下 / 进入搜索"
           />
           <!-- 搜索结果区域 -->
           <ul class="search-result-container" x-show="showSearchResult && content">
