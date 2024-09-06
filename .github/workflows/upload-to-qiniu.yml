@@ -13,6 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Run before_push script
+        run: |
+          chmod +x ./before_push.sh
+          ./before_push.sh
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Update JS file names with timestamp" -a
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload to Qiniu
         uses: saltbo/uptoc@master
         with:
@@ -24,21 +40,3 @@ jobs:
         env:
           UPTOC_UPLOADER_AK: ${{ secrets.QINIU_ACCESS_KEY }}
           UPTOC_UPLOADER_SK: ${{ secrets.QINIU_SECRET_KEY }}
-
-      - name: Refresh Qiniu Cache
-        run: |
-          BODY='{"domains":["https://nav.hrhe.cn"],"urls":[]}'
-          PATH="/v2/domains/prefetch"
-          HOST="fusion.qiniuapi.com"
-          CONTENT_TYPE="application/json"
-          DATE=$(date -u "+%a, %d %b %Y %H:%M:%S GMT")
-          SIGNED_STRING="POST $PATH\nHost: $HOST\nContent-Type: $CONTENT_TYPE\nDate: $DATE\n\n$BODY"
-          SIGNATURE=$(echo -n "$SIGNED_STRING" | openssl dgst -binary -hmac "${{ secrets.QINIU_SECRET_KEY }}" -sha1 | base64 | tr '+/' '-_')
-          AUTH="Qiniu ${{ secrets.QINIU_ACCESS_KEY }}:$SIGNATURE"
-          
-          curl -X POST \
-          "https://$HOST$PATH" \
-          -H "Content-Type: $CONTENT_TYPE" \
-          -H "Date: $DATE" \
-          -H "Authorization: $AUTH" \
-          -d "$BODY"
