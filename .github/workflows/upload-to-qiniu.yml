@@ -27,8 +27,9 @@ jobs:
 
       - name: Refresh Qiniu Cache
         run: |
+          TOKEN=$(echo -n '{"domains":["https://nav.hrhe.cn"],"urls":[]}' | openssl dgst -binary -hmac "${{ secrets.QINIU_SECRET_KEY }}" -sha1 | base64 | tr '+/' '-_' | tr -d '=')
           curl -X POST \
           https://fusion.qiniuapi.com/v2/domains/prefetch \
           -H "Content-Type: application/json" \
-          -H "Authorization: QBox ${{ secrets.QINIU_ACCESS_KEY }}:$(echo -n '{"domains":["https://nav.hrhe.cn"],"urls":[]}' | openssl dgst -binary -hmac "${{ secrets.QINIU_SECRET_KEY }}" -sha1 | base64 | tr '+/' '-_')" \
+          -H "Authorization: QBox ${{ secrets.QINIU_ACCESS_KEY }}:$TOKEN" \
           -d '{"domains":["https://nav.hrhe.cn"],"urls":[]}'
