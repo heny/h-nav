@@ -95,7 +95,7 @@
         <template x-for="(item,index) in commonList">
           <li class="app-item" role="button" @click="onCommonItem(item, index === currentExpandIndex)">
             <template x-if="!(index === currentExpandIndex)">
-              <img :src="getFavicon(item.url)" alt="">
+              <img :src="getFavicon(item.url, `app-list-favicon-${index}`)" :class="`app-list-favicon-${index}`" alt="">
             </template>
 
             <template x-if="(index === currentExpandIndex)">
@@ -104,12 +104,16 @@
                   <span class="iconfont icon-zhankai img"></span>
                 </template>
                 <template x-if="!showExpand">
-                  <img :src="getFavicon(item.url)" alt="">
+                  <img :src="getFavicon(item.url, `app-list-favicon-${index}`)" :class="`app-list-favicon-${index}`" alt="">
                 </template>
               </div>
             </template>
             
-            <div class="app-item-title" x-text="(index === currentExpandIndex) && showExpand ? '展开' : item.title" :title="(index === currentExpandIndex) && showExpand ? '展开' : item.title"></div>
+            <div 
+              class="app-item-title" 
+              x-text="(index === currentExpandIndex) && showExpand ? '展开' : item.title" 
+              :title="(index === currentExpandIndex) && showExpand ? '展开' : item.title">
+            </div>
           </li>
         </template>
         <template x-if="!showExpand">
@@ -151,10 +155,14 @@
         </li>
 
         <li class="current-nav-list">
-          <template x-for="item in _.filter(currentActiveItem.children, 'url')">
+          <template x-for="(item, index) in _.filter(currentActiveItem.children, 'url')">
             <template x-if="!item.title.includes('隐藏')">
               <li class="app-item" role="button" @click="window.open(item.url)">
-                <img :src="getFavicon(item.url)" alt="">
+                <img
+                  :src="getFavicon(item.url, `current-nav-list-favicon-${index}`)" 
+                  :class="`current-nav-list-favicon-${index}`" 
+                  alt=""
+                />
                 <div class="app-item-title" x-text="item.title" :title="item.title"></div>
               </li>
             </template>
@@ -164,6 +172,7 @@
     </div>
   </div>
 
+  <script src="./assets/js/local.js"></script>
   <script src="./assets/js/data.js"></script>
   <script src="./assets/js/axios.min.js"></script>
   <script src="./assets/js/lodash.min.js"></script>

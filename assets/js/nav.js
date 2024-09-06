@@ -19,6 +19,9 @@ function navData () {
     // 当前处于展开位置的应用
     currentExpandIndex: null,
 
+    // 添加一个缓存对象
+    faviconCache: {},
+
     async init () {
       self = this
 
@@ -51,32 +54,57 @@ function navData () {
       }
     },
 
-    async getFavicon (url) {
-      /**
-       * copyright: 2024.8.21
-       * https://api.iowen.cn/doc/favicon.html
-       * https://github.com/owen0o0/getFavicon
-       */
-      const host = new URL(url).host
-      const faviconUrl = `https://api.iowen.cn/favicon/${host}.png`
+    getFavicon (url, className) {
       return new Promise((resolve) => {
-        const img = new Image()
-        img.onload = () => resolve(faviconUrl)
-        img.onerror = () => resolve('/assets/img/error.png')
-        img.src = faviconUrl
-      })
+        const host = new URL(url).host;
+        
+        // 检查缓存中是否已存在
+        if (this.faviconCache[host]) {
+          resolve(this.faviconCache[host]);
+          return;
+        }
+
+        const checkAndLoadFavicon = () => {
+          const element = document.querySelector(`.${className}`);
+          if (!element) {
+            setTimeout(checkAndLoadFavicon, 100);
+            return;
+          }
+
+          const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+              observer.disconnect();
+              this.loadFaviconImage(host).then(resolve);
+            }
+          }, { rootMargin: '50px' });
+
+          observer.observe(element);
+        };
+
+        checkAndLoadFavicon();
+      });
     },
 
-    getFaviconSync (url) {
-      const host = new URL(url).host
-      const faviconUrl = `https://api.iowen.cn/favicon/${host}.png`
-      return faviconUrl
+    loadFaviconImage(host) {
+      return new Promise((resolve) => {
+        const faviconUrl = `https://api.iowen.cn/favicon/${host}.png`;
+        const img = new Image();
+        img.onload = () => {
+          this.faviconCache[host] = faviconUrl; // 缓存成功加载的图片
+          resolve(faviconUrl);
+        };
+        img.onerror = () => {
+          this.faviconCache[host] = '/assets/img/img-error.png'; // 缓存错误图片
+          resolve('/assets/img/img-error.png');
+        };
+        img.src = faviconUrl;
+      });
     },
 
     async getNavList () {
       this.$store.pageStore.loading = true
 
-      // if (!this.isLocalDev) {
+      if (!this.isLocalDev) {
         try {
           const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json', { timeout: 15000 })
 
@@ -92,9 +120,9 @@ function navData () {
           if(result) location.reload()
           return
         }
-      // } else {
-      //   this.$store.pageStore.data = constantData
-      // }
+      } else {
+        this.$store.pageStore.data = constantData
+      }
 
       this.$store.pageStore.loading = false
 
