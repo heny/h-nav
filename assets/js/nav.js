@@ -104,7 +104,7 @@ function navData () {
     async getNavList () {
       this.$store.pageStore.loading = true
 
-      if (!this.isLocalDev) {
+      // if (!this.isLocalDev) {
         try {
           const res = await axios.get('https://json-service.hrhe.cn/read?filepath=bookmarks.json', { timeout: 15000 })
 
@@ -120,9 +120,9 @@ function navData () {
           if(result) location.reload()
           return
         }
-      } else {
-        this.$store.pageStore.data = constantData
-      }
+      // } else {
+      //   this.$store.pageStore.data = constantData
+      // }
 
       this.$store.pageStore.loading = false
 
