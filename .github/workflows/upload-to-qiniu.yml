@@ -19,6 +19,7 @@ jobs:
           driver: qiniu
           region: cn-south-1
           bucket: ${{ secrets.QINIU_BUCKET }}
+          exclude: .git,.github,.vscode
           dist: .
         env:
           UPTOC_UPLOADER_AK: ${{ secrets.QINIU_ACCESS_KEY }}
