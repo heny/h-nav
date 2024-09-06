@@ -17,7 +17,7 @@ jobs:
         uses: saltbo/uptoc@master
         with:
           driver: qiniu
-          region: z2
+          region: cn-south-1
           bucket: ${{ secrets.QINIU_BUCKET }}
           dist: .
         env:
