@@ -13,22 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run before_push script
-        run: |
-          chmod +x ./before_push.sh
-          ./before_push.sh
-
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m "Update JS file names with timestamp" -a
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload to Qiniu
         uses: saltbo/uptoc@master
         with:

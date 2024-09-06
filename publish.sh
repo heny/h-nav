@@ -14,10 +14,16 @@ timestamp=$(date +%Y%m%d%H%M%S)
 
 # 修改assets/js下的所有js文件名
 for file in assets/js/*.js; do
-    filename=$(basename "$file" .js)
-    new_name=$(dirname "$file")/${filename}.${timestamp}.js
+    filename=$(basename "$file")
+    if [[ $filename =~ ^(.+)\.[0-9]{14}\.js$ ]]; then
+        base_name="${BASH_REMATCH[1]}"
+        new_name=$(dirname "$file")/${base_name}.${timestamp}.js
+    else
+        base_name="${filename%.js}"
+        new_name=$(dirname "$file")/${base_name}.${timestamp}.js
+    fi
     mv "$file" "$new_name"
-    sed -i "s|$(basename "$file")|$(basename "$new_name")|g" index.html
+    sed -i "s|$filename|$(basename "$new_name")|g" index.html
 done
 
 # 添加修改后的文件到git
