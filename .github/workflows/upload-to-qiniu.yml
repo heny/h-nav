@@ -19,7 +19,9 @@ jobs:
           driver: qiniu
           region: cn-south-1
           bucket: ${{ secrets.QINIU_BUCKET }}
-          dist: assets,index.html
+          dist: |
+            assets
+            index.html
         env:
           UPTOC_UPLOADER_AK: ${{ secrets.QINIU_ACCESS_KEY }}
           UPTOC_UPLOADER_SK: ${{ secrets.QINIU_SECRET_KEY }}
