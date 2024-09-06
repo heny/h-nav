@@ -27,9 +27,18 @@ jobs:
 
       - name: Refresh Qiniu Cache
         run: |
-          TOKEN=$(echo -n '{"domains":["https://nav.hrhe.cn"],"urls":[]}' | openssl dgst -binary -hmac "${{ secrets.QINIU_SECRET_KEY }}" -sha1 | base64 | tr '+/' '-_' | tr -d '=')
+          BODY='{"domains":["https://nav.hrhe.cn"],"urls":[]}'
+          PATH="/v2/domains/prefetch"
+          HOST="fusion.qiniuapi.com"
+          CONTENT_TYPE="application/json"
+          DATE=$(date -u "+%a, %d %b %Y %H:%M:%S GMT")
+          SIGNED_STRING="POST $PATH\nHost: $HOST\nContent-Type: $CONTENT_TYPE\nDate: $DATE\n\n$BODY"
+          SIGNATURE=$(echo -n "$SIGNED_STRING" | openssl dgst -binary -hmac "${{ secrets.QINIU_SECRET_KEY }}" -sha1 | base64 | tr '+/' '-_')
+          AUTH="Qiniu ${{ secrets.QINIU_ACCESS_KEY }}:$SIGNATURE"
+          
           curl -X POST \
-          https://fusion.qiniuapi.com/v2/domains/prefetch \
-          -H "Content-Type: application/json" \
-          -H "Authorization: QBox ${{ secrets.QINIU_ACCESS_KEY }}:$TOKEN" \
-          -d '{"domains":["https://nav.hrhe.cn"],"urls":[]}'
+          "https://$HOST$PATH" \
+          -H "Content-Type: $CONTENT_TYPE" \
+          -H "Date: $DATE" \
+          -H "Authorization: $AUTH" \
+          -d "$BODY"
