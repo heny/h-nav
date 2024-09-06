@@ -1,0 +1,25 @@
+name: Upload to Qiniu
+
+on:
+  push:
+    branches:
+      - main  # 或者你想要触发上传的其他分支
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Upload to Qiniu
+        uses: saltbo/uptoc@master
+        with:
+          driver: qiniu
+          region: cn-east-1
+          bucket: ${{ secrets.QINIU_BUCKET }}
+          dist: .
+        env:
+          UPTOC_UPLOADER_AK: ${{ secrets.QINIU_ACCESS_KEY }}
+          UPTOC_UPLOADER_SK: ${{ secrets.QINIU_SECRET_KEY }}
