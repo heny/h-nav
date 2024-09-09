@@ -6,12 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>导航网站</title>
   <link rel="shortcut icon" href="/assets/img/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" type="text/css" href="./assets/css/style.20240909141155.css">
-  <link rel="stylesheet" type="text/css" href="./assets/css/reset.20240909141155.css">
-  <link rel="stylesheet" type="text/css" href="./assets/css/media.small.20240909141155.css">
-  <link rel="stylesheet" type="text/css" href="./assets/css/media.large.20240909141155.css">
-  <link rel="stylesheet" type="text/css" href="./assets/css/iconfont.20240909141155.css">
-  <script defer src="./assets/js/alpine.min.20240909141155.js"></script>
+  <link rel="stylesheet" type="text/css" href="./assets/css/style.20240909141627.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/reset.20240909141627.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/media.small.20240909141627.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/media.large.20240909141627.css">
+  <link rel="stylesheet" type="text/css" href="./assets/css/iconfont.20240909141627.css">
+  <script defer src="./assets/js/alpine.min.20240909141627.js"></script>
   <!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script> -->
 </head>
 
@@ -128,17 +128,18 @@
       <div style="margin-top: 40px"></div>
       <ul class="common-list">
         <template x-for="item in commonClassList">
-          <li 
+          <template x-if="!item.title.endsWith('*')">
+            <li 
             x-text="item.title" 
             role="button" 
-            x-if="!item.title.endsWith('*')"
             @click="onTabChange(item)" 
             :class="{
               'common-list-item': true,
               'active': item.id === currentActiveItem.id
             }"
-          >
-          </li>
+            >
+            </li>
+          </template>
         </template>
       </ul>
 
@@ -179,12 +180,12 @@
     </div>
   </div>
 
-  <script src="./assets/js/data.20240909141155.js"></script>
-  <script src="./assets/js/axios.min.20240909141155.js"></script>
-  <script src="./assets/js/lodash.min.20240909141155.js"></script>
-  <script src="./assets/js/pageStore.20240909141155.js"></script>
-  <script src="./assets/js/search.20240909141155.js"></script>
-  <script src="./assets/js/nav.20240909141155.js"></script>
+  <script src="./assets/js/data.20240909141627.js"></script>
+  <script src="./assets/js/axios.min.20240909141627.js"></script>
+  <script src="./assets/js/lodash.min.20240909141627.js"></script>
+  <script src="./assets/js/pageStore.20240909141627.js"></script>
+  <script src="./assets/js/search.20240909141627.js"></script>
+  <script src="./assets/js/nav.20240909141627.js"></script>
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.store('pageStore', pageStore)
