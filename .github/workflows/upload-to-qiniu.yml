@@ -11,16 +11,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # 使用最新版本
 
       - name: Upload to Qiniu
-        uses: saltbo/uptoc@master
+        uses: saltbo/uptoc@master  # 确保使用正确的版本
         with:
           driver: qiniu
-          region: cn-south-1
+          region: cn-south-1  # 确保区域正确
           bucket: ${{ secrets.QINIU_BUCKET }}
           exclude: .git,.github,.vscode
           dist: .
         env:
           UPTOC_UPLOADER_AK: ${{ secrets.QINIU_ACCESS_KEY }}
           UPTOC_UPLOADER_SK: ${{ secrets.QINIU_SECRET_KEY }}
+
+      - name: Refresh CDN Cache
+        run: |
+          curl -X POST "https://api.qiniu.com/v1/purge" \
+          -H "Authorization: QBox ${{ secrets.QINIU_ACCESS_KEY }}:$(echo -n "your_bucket_name:$(date +%s)" | base64 | tr -d '\n' | openssl dgst -sha1 -hmac '${{ secrets.QINIU_SECRET_KEY }}' -binary | base64)" \
+          -H "Content-Type: application/json" \
+          -d '{
+            "urls": [
+              "https://nav.hrhe.cn"
+            ]
+          }'
