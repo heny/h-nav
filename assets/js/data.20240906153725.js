@@ -44,6 +44,18 @@ const searchList = [
         icon: 'icon-juejin',
         url: 'https://juejin.cn/search?query=%s&type=0'
       },
+      {
+        name: 'CSDN',
+        key: 'csdn',
+        icon: 'icon-csdn',
+        url: 'https://so.csdn.net/so/search?q=%s'
+      },
+      {
+        name: '知乎',
+        key: 'zhihu',
+        icon: 'icon-zhihu',
+        url: 'https://www.zhihu.com/search?q=%s'
+      },
     ]
   },
   {
