@@ -3,13 +3,20 @@ const qiniu = require('qiniu');
 async function refreshCdnCache() {
   const accessKey = process.env.QINIU_ACCESS_KEY;
   const secretKey = process.env.QINIU_SECRET_KEY;
-  const domain = process.env.QINIU_DOMAIN;
+  
+  // 从环境变量读取 URLs
+  const urlsString = process.env.QINIU_URLS || '';
+  const urls = urlsString.split('\n').map(url => url.trim()).filter(url => url);
+
+  if (urls.length === 0) {
+    console.error('没有提供有效的 URLs');
+    process.exit(1);
+  }
+
+  console.log('准备刷新的 URLs:', urls);
 
   const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
   const cdnManager = new qiniu.cdn.CdnManager(mac);
-
-  // 修改 URLs 格式
-  const urls = [`http://${domain}/`, `https://${domain}/`];
 
   try {
     const result = await new Promise((resolve, reject) => {
@@ -24,10 +31,8 @@ async function refreshCdnCache() {
       });
     });
 
-    // 添加更详细的日志
     console.log("CDN缓存刷新结果:", JSON.stringify(result, null, 2));
     
-    // 检查刷新是否成功
     if (result.code === 200) {
       console.log("CDN缓存已成功刷新");
     } else {

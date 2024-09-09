@@ -28,9 +28,12 @@ jobs:
       - name: Refresh Qiniu CDN cache
         run: |
           npm install qiniu
-          echo "QINIU_DOMAIN: ${{ secrets.QINIU_DOMAIN }}"
+          echo "QINIU_DOMAIN 的前三个字符: ${QINIU_DOMAIN:0:3}..."
           node refresh_qiniu_cdn.js
         env:
           QINIU_ACCESS_KEY: ${{ secrets.QINIU_ACCESS_KEY }}
           QINIU_SECRET_KEY: ${{ secrets.QINIU_SECRET_KEY }}
           QINIU_DOMAIN: ${{ secrets.QINIU_DOMAIN }}
+          QINIU_URLS: |
+            http://${{ secrets.QINIU_DOMAIN }}/
+            https://${{ secrets.QINIU_DOMAIN }}/
