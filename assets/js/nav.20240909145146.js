@@ -20,7 +20,7 @@ function navData () {
     currentExpandIndex: null,
 
     // 添加一个缓存对象
-    faviconCache: {},
+    faviconCache: new Map(),
 
     async init () {
       self = this
@@ -48,22 +48,46 @@ function navData () {
 
     onCommonItem (item, isExpand) {
       if (!isExpand) {
-        window.open(item.url)
+        this.onOpenUrl(item)
       } else {
         this.showExpand = false
       }
     },
 
-    getFavicon (url, className) {
-      return new Promise((resolve) => {
-        const host = new URL(url).host;
-        
-        // 检查缓存中是否已存在
-        if (this.faviconCache[host]) {
-          resolve(this.faviconCache[host]);
-          return;
-        }
+    // 检查url是否有效
+    checkUrlisValid (url) {
+      if (!url) {
+        return false
+      }
 
+      if(url.startsWith('http')) {
+        try {
+          const parsedUrl = new URL(url)
+          // 检查主机名是否为IP地址
+          const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/
+          if (ipRegex.test(parsedUrl.hostname)) {
+            return false
+          }
+          return true
+        } catch (error) {
+          return false
+        }
+      }
+
+      return false
+    },
+
+    async getFavicon (url, className) {
+      // 检查缓存中是否已存在
+      if (this.faviconCache.has(url)) {
+        return this.faviconCache.get(url);
+      }
+
+      if (!this.checkUrlisValid(url)) {
+        return '/assets/img/img-error.png'
+      }
+
+      return new Promise((resolve) => {
         const checkAndLoadFavicon = () => {
           const element = document.querySelector(`.${className}`);
           if (!element) {
@@ -74,7 +98,7 @@ function navData () {
           const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
               observer.disconnect();
-              this.loadFaviconImage(host).then(resolve);
+              this.loadFaviconImage(url).then(resolve);
             }
           }, { rootMargin: '50px' });
 
@@ -85,16 +109,18 @@ function navData () {
       });
     },
 
-    loadFaviconImage(host) {
+    // 加载图片
+    loadFaviconImage(url) {
       return new Promise((resolve) => {
+        const host = new URL(url).host;
         const faviconUrl = `https://api.iowen.cn/favicon/${host}.png`;
         const img = new Image();
         img.onload = () => {
-          this.faviconCache[host] = faviconUrl; // 缓存成功加载的图片
+          this.faviconCache.set(url, faviconUrl); // 使用完整URL作为键
           resolve(faviconUrl);
         };
         img.onerror = () => {
-          this.faviconCache[host] = '/assets/img/img-error.png'; // 缓存错误图片
+          this.faviconCache.set(url, '/assets/img/img-error.png'); // 使用完整URL作为键
           resolve('/assets/img/img-error.png');
         };
         img.src = faviconUrl;
@@ -172,5 +198,19 @@ function navData () {
       const preItem = this.findItemById(this.commonClassList, this.currentActiveItem.parentId)
       this.currentActiveItem = preItem
     },
+
+    onOpenUrl (item) {
+      if (item.url.startsWith('http')) {
+        window.open(item.url)
+      } else if (item.url.startsWith('javascript:')) {
+        // 对于javascript: URL，显示一个警告
+        alert('警告：此链接包含JavaScript代码。出于安全考虑，我们不能自动执行它。请查看控制台复制执行')
+        // 可选：显示代码内容供用户查看
+        console.log('JavaScript代码:', item.url.slice(11))
+      } else {
+        // 处理其他类型的URL
+        console.log('不支持的URL类型:', item.url)
+      }
+    }
   }
 }
