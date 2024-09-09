@@ -25,13 +25,11 @@ jobs:
           UPTOC_UPLOADER_AK: ${{ secrets.QINIU_ACCESS_KEY }}
           UPTOC_UPLOADER_SK: ${{ secrets.QINIU_SECRET_KEY }}
 
-      - name: Refresh CDN Cache
+      - name: Refresh Qiniu CDN cache
         run: |
-          curl -X POST "https://api.qiniu.com/v1/purge" \
-          -H "Authorization: QBox ${{ secrets.QINIU_ACCESS_KEY }}:$(echo -n "${{ secrets.QINIU_BUCKET }}:$(date +%s)" | base64 | tr -d '\n' | openssl dgst -sha1 -hmac '${{ secrets.QINIU_SECRET_KEY }}' -binary | base64)" \
-          -H "Content-Type: application/json" \
-          -d '{
-            "urls": [
-              "${{ secrets.QINIU_DOMAIN }}"
-            ]
-          }'
+          npm install qiniu
+          node refresh_qiniu_cdn.js
+        env:
+          QINIU_ACCESS_KEY: ${{ secrets.QINIU_ACCESS_KEY }}
+          QINIU_SECRET_KEY: ${{ secrets.QINIU_SECRET_KEY }}
+          QINIU_DOMAIN: ${{ secrets.QINIU_DOMAIN }}
