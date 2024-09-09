@@ -28,10 +28,10 @@ jobs:
       - name: Refresh CDN Cache
         run: |
           curl -X POST "https://api.qiniu.com/v1/purge" \
-          -H "Authorization: QBox ${{ secrets.QINIU_ACCESS_KEY }}:$(echo -n "your_bucket_name:$(date +%s)" | base64 | tr -d '\n' | openssl dgst -sha1 -hmac '${{ secrets.QINIU_SECRET_KEY }}' -binary | base64)" \
+          -H "Authorization: QBox ${{ secrets.QINIU_ACCESS_KEY }}:$(echo -n "${{ secrets.QINIU_BUCKET }}:$(date +%s)" | base64 | tr -d '\n' | openssl dgst -sha1 -hmac '${{ secrets.QINIU_SECRET_KEY }}' -binary | base64)" \
           -H "Content-Type: application/json" \
           -d '{
             "urls": [
-              "https://nav.hrhe.cn"
+              "${{ secrets.QINIU_DOMAIN }}"
             ]
           }'
