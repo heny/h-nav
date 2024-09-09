@@ -12,6 +12,7 @@
 
 ## 部署到七牛云
 提交代码时：`sh ./publish.sh 'feat: update'`
+
 发布时会做的工作：
   1. 改变css、js、scss文件的文件名
   2. 更新index.html中引用的文件名

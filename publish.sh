@@ -23,7 +23,7 @@ update_file() {
     
     # 检查文件是否有变更
     if git diff --quiet "$file"; then
-        echo "文件未变更，跳过: $file"
+        # echo "文件未变更，跳过: $file"
         return
     fi
     
