@@ -28,7 +28,6 @@ jobs:
       - name: Refresh Qiniu CDN cache
         run: |
           npm install qiniu
-          echo "QINIU_DOMAIN 的顶级域名: .${QINIU_DOMAIN##*.}"
           node refresh_qiniu_cdn.js
         env:
           QINIU_ACCESS_KEY: ${{ secrets.QINIU_ACCESS_KEY }}
